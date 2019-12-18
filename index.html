@@ -1,20 +1,29 @@
-<script src="https://outofaxis.github.io/pixelart-sliding-background/pixelart-sliding-background.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pixelart Sliding Background Usage Example<title>
+  <script src="https://outofaxis.github.io/pixelart-sliding-background/pixelart-sliding-background.js" async></script>
+</head>
+<body>
+  
+  <div>
+    <pixelart-sliding-background imgBase="https://outofaxis.github.io/pixelart-sliding-background/screens"></pixelart-sliding-background>
+  </div>
 
-<div>
-  <pixelart-sliding-background imgBase="https://outofaxis.github.io/pixelart-sliding-background/screens"></pixelart-sliding-background>
-</div>
-
-<style>
-  body {
-    margin: 0;
-    display: grid;
-    place-content: center;
-  }
-
-  body > div {
-    width: 85vw;
-    height: 85vh;
-    position: relative;
-    overflow: hidden;
-  }
-</style>
+  <style>
+    body {
+      margin: 0;
+      display: grid;
+      place-content: center;
+    }
+  
+    body > div {
+      width: 85vw;
+      height: 85vh;
+      position: relative;
+      overflow: hidden;
+    }
+  </style>
+</body>
+</html>
