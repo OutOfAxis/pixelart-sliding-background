@@ -8,38 +8,65 @@ class PixelartSlidingBackground extends HTMLElement {
 
   connectedCallback() {
     const root = this.shadowRoot.querySelector(".root");
-    const imageBase = this.getAttribute("imgBase") || '';
+    const imageBase = this.getAttribute("imgBase") || "";
+    createColumns(root);
+    loadScreenImages(root, imageBase);
+  }
+}
 
-    const firstColumn = createColumn(1, 6);
-    const secondColumn = createColumn(7, 12)
+const IMAGES_COUNT = 14;
+let randomSequence = genRandSeq();
 
-    new Array(13).fill(0).forEach((_, i) => {
-      if (i === 0) return;
-      const img = new Image();
-      img.onload = () => {
-        root.querySelectorAll(`img[data-src="screen-${i}.png"]`).forEach(el => {
-          el.src = img.src;
-        });
-      };
-      img.src = `${imageBase}/screen-${i}.png`;
-    });
+function genRandSeq() {
+  const arr = [];
+  while (arr.length < IMAGES_COUNT) {
+    const r = Math.floor(Math.random() * IMAGES_COUNT) + 1;
+    if (arr.indexOf(r) === -1) arr.push(r);
+  }
+  return arr;
+}
 
-    for (let i = 0; i < 8; ++i) {
-      root.appendChild(firstColumn.cloneNode(true));
-      root.appendChild(secondColumn.cloneNode(true));
+let nextImageIndex = 0;
+const getNextImageIndex = (function* genNextImageIndexGenerator() {
+  while (true) {
+    ++nextImageIndex;
+    if (nextImageIndex > randomSequence.length-1) {
+      nextImageIndex = 0;
+      randomSequence = genRandSeq();
     }
+    yield randomSequence[nextImageIndex];
+  }
+})();
+
+function createColumns(root) {
+  for (let i = 0; i < 8; ++i) {
+    root.appendChild(createColumn(1, 15));
   }
 }
 
 function createColumn(start, end) {
   const column = document.createElement("div");
-  for (let i = start; i < end+1; ++i) {
+  for (let i = start; i < end + 1; ++i) {
+    const imgIndex = getNextImageIndex.next().value;
     const img = document.createElement("img");
     img.src = initialImage();
-    img.setAttribute("data-src", `screen-${i}.png`);
+    img.setAttribute("data-src", `screen-${imgIndex}.png`);
     column.appendChild(img);
   }
   return column;
+}
+
+function loadScreenImages(root, imageBase) {
+  new Array(IMAGES_COUNT+1).fill(0).forEach((_, i) => {
+    if (i === 0) return;
+    const img = new Image();
+    img.onload = () => {
+      root.querySelectorAll(`img[data-src="screen-${i}.png"]`).forEach(el => {
+        el.src = img.src;
+      });
+    };
+    img.src = `${imageBase}/screen-${i}.png`;
+  });
 }
 
 customElements.define("pixelart-sliding-background", PixelartSlidingBackground);
@@ -65,8 +92,8 @@ function tmpl() {
         grid-auto-flow: column;
         grid-auto-columns: 228px;
         gap: 1rem;
-        left: -800px;
-        top: -800px;
+        left: -300px;
+        top: -1500px;
         animation: fadeIn .1s ease-in-out forwards;
       }
 
