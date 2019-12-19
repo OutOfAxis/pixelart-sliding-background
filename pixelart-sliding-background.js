@@ -77,7 +77,6 @@ function tmpl() {
       }
 
       :host .root > * {
-        filter: brightness(0.2) saturate(0.9);
         display: grid;
         grid-auto-rows: 400px;
         gap: .7rem;
