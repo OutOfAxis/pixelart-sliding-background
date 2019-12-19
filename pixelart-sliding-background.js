@@ -7,7 +7,13 @@ class PixelartSlidingBackground extends HTMLElement {
   }
 
   connectedCallback() {
+    this.render();
+    window.addEventListener('resize', this.render)
+  }
+
+  render = () => {
     const root = this.shadowRoot.querySelector(".root");
+    root.innerHTML = '';
     const imageBase = this.getAttribute("imgBase") || "";
     createColumns(root);
     loadScreenImages(root, imageBase);
@@ -39,14 +45,30 @@ const getNextImageIndex = (function* genNextImageIndexGenerator() {
 })();
 
 function createColumns(root) {
-  for (let i = 0; i < 8; ++i) {
-    root.appendChild(createColumn(1, 15));
+  const IMAGE_WIDTH = 228;
+  const IMAGE_HEIGHT = 400;
+  root.style.width = '100%';
+  root.style.height = '100%';
+  const parentWidth = root.offsetWidth;
+  const parentHeight = root.offsetHeight;
+  const biggestSide = parentWidth > parentHeight ? parentWidth : parentHeight;
+  const rhombusSide = ~~(biggestSide / Math.sqrt(2) * 2);
+  const columnsCount = ~~(rhombusSide / (IMAGE_WIDTH+16)) + 1;
+  const imageCount = ~~(rhombusSide / (IMAGE_HEIGHT+11)) + 1;
+  for (let i = 0; i < columnsCount; ++i) {
+    root.appendChild(createColumn(imageCount));
   }
+  root.style.width = 'auto';
+  root.style.height = 'auto';
+  root.style.marginLeft = '50%'
+  root.style.marginTop = '50%'
+  root.style.transformOrigin = '0 0';
+  root.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
 }
 
-function createColumn(start, end) {
+function createColumn(imageCount) {
   const column = document.createElement("div");
-  for (let i = start; i < end + 1; ++i) {
+  for (let i = 1; i < imageCount+1; ++i) {
     const imgIndex = getNextImageIndex.next().value;
     const img = document.createElement("img");
     img.src = initialImage();
@@ -84,16 +106,13 @@ function tmpl() {
       }
 
       :host .root {
-        transform: rotate(-35deg);
         position: absolute;
         overflow: hidden;
-        background-color: rgba(0,0,0,.9);
+        background-color: rgba(0,0,0,.1);
         display: grid;
         grid-auto-flow: column;
         grid-auto-columns: 228px;
-        gap: 1rem;
-        left: -300px;
-        top: -1500px;
+        gap: 16px;
         animation: fadeIn .1s ease-in-out forwards;
       }
 
@@ -106,7 +125,7 @@ function tmpl() {
       :host .root > * {
         display: grid;
         grid-auto-rows: 400px;
-        gap: .7rem;
+        gap: 11px;
       }
 
       :host .root>div:nth-child(2n-1) {
