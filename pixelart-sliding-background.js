@@ -2,6 +2,8 @@ class PixelartSlidingBackground extends HTMLElement {
   constructor() {
     super();
     imagesCount = ~~this.getAttribute("imgCount") || 14;
+    marginTop = this.getAttribute("marginTop") || '50%';
+    marginLeft = this.getAttribute("marginLeft") || '50%';
     const shadow = this.attachShadow({ mode: "open" });
     const node = tmpl().content.cloneNode(true);
     shadow.appendChild(node);
@@ -22,6 +24,8 @@ class PixelartSlidingBackground extends HTMLElement {
 }
 
 let imagesCount = 14;
+let marginTop = '50%';
+let marginLeft = '50%';
 let randomSequence = genRandSeq();
 
 function genRandSeq() {
@@ -61,8 +65,8 @@ function createColumns(root) {
   }
   root.style.width = 'auto';
   root.style.height = 'auto';
-  root.style.marginLeft = '50%'
-  root.style.marginTop = '50%'
+  root.style.marginLeft = marginLeft;
+  root.style.marginTop = marginTop;
   root.style.transformOrigin = '0 0';
   root.style.transform = 'rotate(-45deg) translate(-50%, -50%)';
 }
