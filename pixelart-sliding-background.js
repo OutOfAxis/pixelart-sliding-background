@@ -1,6 +1,7 @@
 class PixelartSlidingBackground extends HTMLElement {
   constructor() {
     super();
+    imagesCount = ~~this.getAttribute("imgCount") || 14;
     const shadow = this.attachShadow({ mode: "open" });
     const node = tmpl().content.cloneNode(true);
     shadow.appendChild(node);
@@ -20,13 +21,13 @@ class PixelartSlidingBackground extends HTMLElement {
   }
 }
 
-const IMAGES_COUNT = 14;
+let imagesCount = 14;
 let randomSequence = genRandSeq();
 
 function genRandSeq() {
   const arr = [];
-  while (arr.length < IMAGES_COUNT) {
-    const r = Math.floor(Math.random() * IMAGES_COUNT) + 1;
+  while (arr.length < imagesCount) {
+    const r = Math.floor(Math.random() * imagesCount) + 1;
     if (arr.indexOf(r) === -1) arr.push(r);
   }
   return arr;
@@ -79,7 +80,7 @@ function createColumn(imageCount) {
 }
 
 function loadScreenImages(root, imageBase) {
-  new Array(IMAGES_COUNT+1).fill(0).forEach((_, i) => {
+  new Array(imagesCount+1).fill(0).forEach((_, i) => {
     if (i === 0) return;
     const img = new Image();
     img.onload = () => {
